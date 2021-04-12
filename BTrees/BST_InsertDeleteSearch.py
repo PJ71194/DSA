@@ -37,29 +37,25 @@ class BST:
 		else:
 			return self.getSuccessor(root.left)
 
-	def getPredecessor(self, root):
-		if not root or not root.right:
-			return root
-		else:
-			return self.getPredecessor(root.right)
-
 	def delete(self, root, key):
 		if root == None:
 			return None
 
 		if root.val == key:
-			if root.right:
+			if not root.left:
+				rightChild = root.right
+				root = None
+				return rightChild
+			elif not root.right:
+				leftChild = root.left
+				root = None
+				return leftChild
+			else:
 				inorderSuccessor = self.getSuccessor(root.right)
 				root.val = inorderSuccessor.val
 				inorderSuccessor.val = key
 				root.right = self.delete(root.right, key)
-			elif root.left:
-				inorderPredecessor = self.getPredecessor(root.left)
-				root.val = inorderPredecessor.val
-				inorderPredecessor.val = key
-				root.left = self.delete(root.left, key)
-			else:
-				return None
+
 		elif root.val < key:
 			root.right = self.delete(root.right, key)
 		else:
