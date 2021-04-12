@@ -31,6 +31,18 @@ class BST:
 		else:
 			return self.search(root.left, key)
 
+	def getSuccessor(self, root):
+		if not root or not root.left:
+			return root
+		else:
+			return self.getSuccessor(root.left)
+
+	def getPredecessor(self, root):
+		if not root or not root.right:
+			return root
+		else:
+			return self.getPredecessor(root.right)
+
 	def delete(self, root, key):
 		if root == None:
 			return None
@@ -39,17 +51,21 @@ class BST:
 			if root.right:
 				inorderSuccessor = self.getSuccessor(root.right)
 				root.val = inorderSuccessor.val
-				root.right = self.delete(root, key)
+				inorderSuccessor.val = key
+				root.right = self.delete(root.right, key)
 			elif root.left:
 				inorderPredecessor = self.getPredecessor(root.left)
 				root.val = inorderPredecessor.val
-				root.left = self.delete(root, key)
+				inorderPredecessor.val = key
+				root.left = self.delete(root.left, key)
 			else:
 				return None
 		elif root.val < key:
-			return self.delete(root.right, key)
+			root.right = self.delete(root.right, key)
 		else:
-			return self.delete(root.left, key)
+			root.left = self.delete(root.left, key)
+
+		return root
 
 	def inorder(self, root, order):
 		if root == None:
@@ -67,15 +83,29 @@ if __name__=='__main__':
 	arr = [10, 8, 15, 6, 9, 13, 20, 4, 7, 12, 14, 16, 22, 5, 18]
 	tree = BST()
 	for ele in arr:
-		tree.insert(ele)
+		tree.root = tree.insert(tree.root, ele)
 
-	print(tree.search(9).val)
-	print(tree.search(16).val)
-	node = tree.search(25)
+	order = []
+	tree.inorder(tree.root, order)
+	print(order)
+
+	print(tree.search(tree.root, 9).val)
+	print(tree.search(tree.root, 16).val)
+	node = tree.search(tree.root, 25)
 	if node == None:
 		print("not found")
 
-	tree.delete(5)
+	tree.delete(tree.root, 5)
+	order = []
+	tree.inorder(tree.root, order)
+	print(order)
+
+	tree.delete(tree.root, 16)
+	order = []
+	tree.inorder(tree.root, order)
+	print(order)
+
+	tree.delete(tree.root, 15)
 	order = []
 	tree.inorder(tree.root, order)
 	print(order)
