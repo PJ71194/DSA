@@ -12,22 +12,21 @@ class Graph:
 	def dijkstra(self, s):
 		dist = [float('inf') for i in range(self.V)]
 		dist[s] = 0
-		heap = []
 
-		visisted = {}
-		visisted[s] = 1
-		lastInsertedNode = s
-		for i in range(self.V - 1):
-			for v, w in self.graph[lastInsertedNode]:
-				if v not in visisted:
-					heapq.heappush(heap, (dist[lastInsertedNode] + w, lastInsertedNode, v))
-					visisted[v] = 1
-				
+		visited = {}
+		while len(visited) < self.V:
+			minDistNode = s
+			minDist = float('inf')
+			for v in range(self.V):
+				if v not in visited and dist[v] < minDist:
+					minDist = dist[v]
+					minDistNode = v
 
-			mindist, src, dest = heapq.heappop(heap)
-			#print(dest, mindist)
-			lastInsertedNode = dest
-			dist[dest] = mindist
+			visited[minDistNode] = 1
+
+			for v, w in self.graph[minDistNode]:
+				if v not in visited:
+					dist[v] = min(dist[v], dist[minDistNode] + w)
 
 		print(dist)
 
